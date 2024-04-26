@@ -67,10 +67,10 @@ public class FlightService implements IFlightService {
         if (isCreating) {
             flight.setSeatsEconomy(flight.getSeatsEconomy() - flightBooking.getSeatsEconomyTaken());
             flight.setSeatsBusiness(flight.getSeatsBusiness() - flightBooking.getSeatsBusinessTaken());
-            if (flight.getSeatsEconomy()==0 && flight.getSeatsBusiness() == 0) {
+            if (flight.getSeatsEconomy() == 0 && flight.getSeatsBusiness() == 0) {
                 logicDeleteFlight(flight);
             }
-        }else {
+        } else {
             flight.setSeatsEconomy(flight.getSeatsEconomy() + flightBooking.getSeatsEconomyTaken());
             flight.setSeatsBusiness(flight.getSeatsBusiness() + flightBooking.getSeatsBusinessTaken());
         }
@@ -80,9 +80,9 @@ public class FlightService implements IFlightService {
     @Override
     public List<FlightDto> getAvailableFlights(LocalDate dateFrom, LocalDate dateTo, String origin, String destination) {
         // Consulta para obtener los vuelos de ida
-        List<Flight> departureFlight = flightRepo.findFlightsByDepartureDateAndOriginAndDestination(dateFrom, origin, destination);
+        List<Flight> departureFlight = flightRepo.findFlightsByDepartureDateAndOriginAndDestinationAndDeletedIsFalse(dateFrom, origin, destination);
         // Consulta para obtener los vuelos de vuelta (intercambiando origen y destino)
-        List<Flight> returnFlight = flightRepo.findFlightsByDepartureDateAndOriginAndDestination(dateTo, destination, origin);
+        List<Flight> returnFlight = flightRepo.findFlightsByDepartureDateAndOriginAndDestinationAndDeletedIsFalse(dateTo, destination, origin);
 
         // Combinamos los vuelos en una lista para devolver y mostrar al usuario
         List<Flight> availableFlights = new ArrayList<>();

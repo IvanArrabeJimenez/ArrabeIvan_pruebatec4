@@ -22,5 +22,5 @@ public interface IFlightBookingService {
 
     public void editFlightbooking(FlightBooking flightBooking, FlightBooking flightBookingEdit);
 
-    public void deleteAllFlightBookings(Flight flight);
+    public Boolean checkAllFlightBookings(Flight flight);
 }

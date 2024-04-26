@@ -13,6 +13,7 @@ public class HotelService implements IHotelService{
 
     @Override
     public void saveHotel(Hotel hotel) {
+        hotel.setDeleted(false);
         hotelRepo.save(hotel);
     }
 }

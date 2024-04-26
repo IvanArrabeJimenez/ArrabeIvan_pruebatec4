@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@MappedSuperclass // Indica que esta clase no será mapeada directamente a una tabla en la base de datos
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // Estrategia de herencia: tabla por clase concreta
 public abstract class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

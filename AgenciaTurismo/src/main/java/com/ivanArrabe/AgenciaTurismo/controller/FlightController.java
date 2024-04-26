@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,7 @@ public class FlightController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<Flight> createFlight(@RequestBody Flight flight) {
+    public ResponseEntity<Flight> saveFlight(@RequestBody Flight flight) {
 
         if (flight.getFlightCode() == null || flight.getFlightCode().isEmpty() || flight.getOrigin() == null || flight.getOrigin().isEmpty() ||
                 flight.getDestination() == null || flight.getDestination().isEmpty() || flight.getDepartureDate() == null ||
@@ -69,6 +70,7 @@ public class FlightController {
             @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
             @ApiResponse(responseCode = "204", description = "No se encontró el vuelo que intenta eliminar."),
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
+            @ApiResponse(responseCode = "409", description = "No se puede eliminar el vuelo porque existen reservas asociadas a él."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
     public ResponseEntity<Flight> logicDeleteFlight(@PathVariable Long id) {
@@ -77,10 +79,12 @@ public class FlightController {
         if (flight == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        //Antes de dar de baja el vuelo comprobamos que no tiene reservas activas.
+        if (!flightBookingService.checkAllFlightBookings(flight)) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        //Si no hay reservas activas borramos el vuelo.
         flightService.logicDeleteFlight(flight);
-        //Borramos también todas las reservas asociadas a ese vuelo.
-        flightBookingService.deleteAllFlightBookings(flight);
-
         return ResponseEntity.ok(flight);
     }
 
@@ -112,5 +116,25 @@ public class FlightController {
         }
 
         return ResponseEntity.ok(flightService.getFlightById(id));
+    }
+
+    @GetMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
+            @ApiResponse(responseCode = "204", description = "No se encontraron vuelos para las fechas o destinos indicados."),
+            @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
+            @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
+    })
+    public ResponseEntity<List<FlightDto>> getAvailableFlights(@RequestParam("dateFrom") LocalDate dateFrom,
+                                                               @RequestParam("dateTo") LocalDate dateTo,
+                                                               @RequestParam("origin") String origin,
+                                                               @RequestParam("destination") String destination) {
+        List<FlightDto> flights = flightService.getAvailableFlights(dateFrom, dateTo, origin, destination);
+
+        if (flights.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return ResponseEntity.ok(flights);
+        }
     }
 }

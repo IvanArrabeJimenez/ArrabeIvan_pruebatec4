@@ -1,6 +1,5 @@
 package com.ivanArrabe.AgenciaTurismo.controller;
 
-import com.ivanArrabe.AgenciaTurismo.dto.FlightDto;
 import com.ivanArrabe.AgenciaTurismo.dto.FlightbookingDto;
 import com.ivanArrabe.AgenciaTurismo.exception.AgenciaException;
 import com.ivanArrabe.AgenciaTurismo.model.Flight;
@@ -20,7 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/agency")
+@RequestMapping("/agency/flight-bookings")
 public class FlightBookingController {
 
     @Autowired
@@ -30,7 +29,7 @@ public class FlightBookingController {
     @Autowired
     private IFlightBookingService flightBookingService;
 
-    @PostMapping("/flight-booking/new")
+    @PostMapping("/new")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
             @ApiResponse(responseCode = "400", description = "Los datos introducidos no coinciden con el vuelo solicitado."),
@@ -63,7 +62,7 @@ public class FlightBookingController {
         return ResponseEntity.ok(flightBooking);
     }
 
-    @DeleteMapping("/flight-booking/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
             @ApiResponse(responseCode = "204", description = "No se encontró la reserva que intenta eliminar."),
@@ -82,7 +81,7 @@ public class FlightBookingController {
         return ResponseEntity.ok(flightBooking);
     }
 
-    @GetMapping("/flight-bookings")
+    @GetMapping
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
@@ -95,7 +94,7 @@ public class FlightBookingController {
         return ResponseEntity.ok(flightBookingService.getFlightBookings());
     }
 
-    @GetMapping("/flight-bookings/{id}")
+    @GetMapping("/{id}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
             @ApiResponse(responseCode = "204", description = "No se encontró ninguna reserva con el id proporcionado."),
@@ -110,7 +109,7 @@ public class FlightBookingController {
         return ResponseEntity.ok(flightBookingService.getFlightBookingById(id));
     }
 
-    @PutMapping("/flight-bookings/edit/{id}")
+    @PutMapping("/edit/{id}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
             @ApiResponse(responseCode = "204", description = "No se encontró el vuelo que intenta editar."),
@@ -145,25 +144,5 @@ public class FlightBookingController {
         }
         flightBookingService.editFlightbooking(flightBooking, flightBookingEdit);
         return ResponseEntity.ok(flightBooking);
-    }
-
-    @GetMapping("/flights")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
-            @ApiResponse(responseCode = "204", description = "No se encontraron vuelos para las fechas o destinos indicados."),
-            @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
-            @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
-    })
-    public ResponseEntity<List<FlightDto>> getAvailableFlights(@RequestParam("dateFrom") LocalDate dateFrom,
-                                                               @RequestParam("dateTo") LocalDate dateTo,
-                                                               @RequestParam("origin") String origin,
-                                                               @RequestParam("destination") String destination) {
-        List<FlightDto> flights = flightService.getAvailableFlights(dateFrom, dateTo, origin, destination);
-
-        if (flights.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return ResponseEntity.ok(flights);
-        }
     }
 }

@@ -19,7 +19,5 @@ public class Hotel {
     private String hotelCode;
     private String name;
     private String city;
-
-    @OneToMany
-    private List<Room> roomList;
+    private Boolean deleted;
 }

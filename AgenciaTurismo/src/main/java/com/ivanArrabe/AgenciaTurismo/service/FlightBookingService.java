@@ -85,9 +85,9 @@ public class FlightBookingService implements IFlightBookingService {
     }
 
     @Override
-    public void deleteAllFlightBookings(Flight flight) {
+    public Boolean checkAllFlightBookings(Flight flight) {
         List<FlightBooking> flightBookings = flightBookingRepo.findAllByFlight(flight);
-        flightBookings.forEach(flightBooking -> flightBooking.setDeleted(true));
-        flightBookingRepo.saveAll(flightBookings);
+        return flightBookings.stream()
+                .allMatch(FlightBooking::getDeleted);
     }
 }

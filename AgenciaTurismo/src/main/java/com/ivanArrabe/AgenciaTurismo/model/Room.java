@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,11 +16,11 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToOne
-    private HotelBooking hotelBooking;
+    @ManyToOne
+    private Hotel hotel;
 
     private String roomCode;
     private String roomType;
-    private Double pricePerNight;
-    private boolean booked = false;
+    private Integer roomCapacity;
+    private Boolean deleted;
 }
