@@ -1,6 +1,6 @@
 package com.ivanArrabe.AgenciaTurismo.service;
 
-import com.ivanArrabe.AgenciaTurismo.dto.FlightbookingDto;
+import com.ivanArrabe.AgenciaTurismo.dto.FlightBookingDto;
 import com.ivanArrabe.AgenciaTurismo.model.Flight;
 import com.ivanArrabe.AgenciaTurismo.model.FlightBooking;
 import com.ivanArrabe.AgenciaTurismo.model.User;
@@ -27,10 +27,8 @@ public class FlightBookingService implements IFlightBookingService {
     public Boolean checkBooking(FlightBooking flightBooking) {
         flightBooking.setDeleted(false);
         // Obtenemos la lista de reservas existentes que no estén eliminadas
-        List<FlightBooking> flightBookings = flightBookingRepo.findByDeletedFalse();
-
         // Buscamos si existe una reserva completamente igual a la que vamos a introducir
-        return flightBookings.stream()
+        return flightBookingRepo.findByDeletedFalse().stream()
                 .anyMatch(existingBooking ->
                         existingBooking.getUser().getId().equals(flightBooking.getUser().getId()) &&
                                 existingBooking.getFlight().getId().equals(flightBooking.getFlight().getId()) &&
@@ -54,20 +52,19 @@ public class FlightBookingService implements IFlightBookingService {
     }
 
     @Override
-    public List<FlightbookingDto> getFlightBookings() {
-        List<FlightBooking> flightBookings = flightBookingRepo.findAllByDeletedIsFalse();
+    public List<FlightBookingDto> getFlightBookings() {
 
-        return flightBookings.stream()
-                .map(flightBooking -> new FlightbookingDto(flightBooking.getId(), flightBooking.getUser(), flightBooking.getFlight()))
+        return flightBookingRepo.findAllByDeletedIsFalse().stream()
+                .map(flightBooking -> new FlightBookingDto(flightBooking.getId(), flightBooking.getUser(), flightBooking.getFlight()))
                 .toList();
     }
 
     @Override
-    public FlightbookingDto getFlightBookingById(Long id) {
+    public FlightBookingDto getFlightBookingById(Long id) {
         return flightBookingRepo.findAllByDeletedIsFalse().stream()
                 .filter(flightBooking -> flightBooking.getId().equals(id))
                 .findFirst()
-                .map(flightBooking -> new FlightbookingDto(flightBooking.getId(), flightBooking.getUser(), flightBooking.getFlight()))
+                .map(flightBooking -> new FlightBookingDto(flightBooking.getId(), flightBooking.getUser(), flightBooking.getFlight()))
                 .orElse(null);
     }
 

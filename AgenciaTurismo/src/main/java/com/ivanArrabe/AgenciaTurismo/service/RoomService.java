@@ -45,7 +45,7 @@ public class RoomService implements IRoomService{
     public List<RoomDto> getRooms() {
         List<Room> rooms = roomRepo.findAllByDeletedIsFalse();
         return rooms.stream()
-                .map(room -> new RoomDto(room.getId(), room.getRoomCode(), room.getRoomType()))
+                .map(room -> new RoomDto(room.getId(), room.getHotel().getCity(), room.getRoomCode(), room.getRoomType()))
                 .toList();
     }
 
@@ -54,18 +54,21 @@ public class RoomService implements IRoomService{
         return roomRepo.findAllByDeletedIsFalse().stream()
                 .filter(room -> room.getId().equals(id))
                 .findFirst()
-                .map(room -> new RoomDto(room.getId(), room.getRoomCode(), room.getRoomType()))
+                .map(room -> new RoomDto(room.getId(), room.getHotel().getCity(), room.getRoomCode(), room.getRoomType()))
                 .orElse(null);
     }
 
     @Override
     public List<RoomDto> getAvailableRooms(LocalDate dateFrom, LocalDate dateTo, String destination) {
-        //Filtramos las habitaciones que estén disponibles en un rango de fechas
-        List<Room> availableRooms = roomRepo.findRoomsByDepartureDateBeforeAndEntryDateAfterOrEntryDateIsNullOrDepartureDateIsNull(dateTo, dateFrom);
-        //posteriormente filtramos por ciudad y devolvemos el dto para simplificar la vista
-        return availableRooms.stream()
+        return roomRepo.findAll().stream()
+                // Filtrar las habitaciones cuya fecha de entrada o salida no se solape con el rango especificado
+                .filter(room -> room.getRoomBookings().stream()
+                        .noneMatch(booking ->
+                                (booking.getEntryDate().isBefore(dateTo) || booking.getEntryDate().isEqual(dateTo)) &&
+                                        (booking.getDepartureDate().isAfter(dateFrom) || booking.getDepartureDate().isEqual(dateFrom))))
+                // Filtrar por la ciudad del hotel
                 .filter(room -> room.getHotel().getCity().equals(destination))
-                .map(room -> new RoomDto(room.getId(), room.getRoomCode(), room.getRoomType()))
+                .map(room -> new RoomDto(room.getId(), room.getHotel().getCity(), room.getRoomCode(), room.getRoomType()))
                 .toList();
     }
 }

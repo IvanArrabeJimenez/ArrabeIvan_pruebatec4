@@ -32,7 +32,7 @@ public class FlightController {
     })
     public ResponseEntity<Flight> saveFlight(@RequestBody Flight flight) {
 
-        if (flight.getFlightCode() == null || flight.getFlightCode().isEmpty() || flight.getOrigin() == null || flight.getOrigin().isEmpty() ||
+        if (flight == null || flight.getFlightCode() == null || flight.getFlightCode().isEmpty() || flight.getOrigin() == null || flight.getOrigin().isEmpty() ||
                 flight.getDestination() == null || flight.getDestination().isEmpty() || flight.getDepartureDate() == null ||
                 flight.getSeatsEconomy() == null || flight.getSeatsEconomy() <= 0 || flight.getSeatsBusiness() == null || flight.getSeatsBusiness() <= 0) {
 
@@ -54,7 +54,7 @@ public class FlightController {
         Flight flight = flightService.findFlight(id);
         if (flight == null || flight.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else if (flightEdit.getFlightCode() == null || flightEdit.getFlightCode().isEmpty() || flightEdit.getOrigin() == null || flightEdit.getOrigin().isEmpty() ||
+        } else if (flightEdit == null || flightEdit.getFlightCode() == null || flightEdit.getFlightCode().isEmpty() || flightEdit.getOrigin() == null || flightEdit.getOrigin().isEmpty() ||
                 flightEdit.getDestination() == null || flightEdit.getDestination().isEmpty() || flightEdit.getDepartureDate() == null ||
                 flightEdit.getSeatsEconomy() == null || flightEdit.getSeatsEconomy() <= 0 || flightEdit.getSeatsBusiness() == null || flightEdit.getSeatsBusiness() <= 0) {
 

@@ -42,8 +42,8 @@ public class FlightService implements IFlightService {
 
     @Override
     public List<FlightDto> getFlights() {
-        List<Flight> flights = flightRepo.findAllByDeletedIsFalse();
-        return flights.stream()
+
+        return flightRepo.findAllByDeletedIsFalse().stream()
                 .map(flight -> new FlightDto(flight.getId(), flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDepartureDate()))
                 .toList();
     }

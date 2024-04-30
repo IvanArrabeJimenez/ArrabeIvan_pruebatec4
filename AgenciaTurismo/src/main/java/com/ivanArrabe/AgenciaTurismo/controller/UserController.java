@@ -25,7 +25,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
     public ResponseEntity<User> saveUser(@RequestBody User user) {
-        if (user.getDni() == null || user.getDni().isEmpty() || user.getName() == null || user.getName().isEmpty()
+        if (user == null || user.getDni() == null || user.getDni().isEmpty() || user.getName() == null || user.getName().isEmpty()
                 || user.getSurname() == null || user.getSurname().isEmpty() || user.getEmail() == null || user.getEmail().isEmpty()) {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -44,11 +44,11 @@ public class UserController {
     public ResponseEntity<User> editUser(@PathVariable Long id, @RequestBody User userEdit) {
 
         User user = userService.findUser(id);
-        if (user == null) {
+        if (user == null || user.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        } else if (user.getDni() == null || user.getDni().isEmpty() || user.getName() == null || user.getName().isEmpty()
-                || user.getSurname() == null || user.getSurname().isEmpty() || user.getEmail() == null || user.getEmail().isEmpty()) {
+        } else if (userEdit == null || userEdit.getDni() == null || userEdit.getDni().isEmpty() || userEdit.getName() == null || userEdit.getName().isEmpty()
+                || userEdit.getSurname() == null || userEdit.getSurname().isEmpty() || userEdit.getEmail() == null || userEdit.getEmail().isEmpty()) {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -66,7 +66,7 @@ public class UserController {
     public ResponseEntity<User> logicDeleteUser(@PathVariable Long id) {
 
         User user = userService.findUser(id);
-        if (user == null) {
+        if (user == null || user.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         userService.logicDeleteUser(user);

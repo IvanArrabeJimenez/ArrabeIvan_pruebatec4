@@ -1,6 +1,6 @@
 package com.ivanArrabe.AgenciaTurismo.controller;
 
-import com.ivanArrabe.AgenciaTurismo.dto.FlightbookingDto;
+import com.ivanArrabe.AgenciaTurismo.dto.FlightBookingDto;
 import com.ivanArrabe.AgenciaTurismo.exception.AgenciaException;
 import com.ivanArrabe.AgenciaTurismo.model.Flight;
 import com.ivanArrabe.AgenciaTurismo.model.FlightBooking;
@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+
 import java.util.List;
 
 @RestController
@@ -42,19 +42,16 @@ public class FlightBookingController {
         if (user == null || !user.getId().equals(flightBooking.getUser().getId()) ||
                 flight == null || !flight.getId().equals(flightBooking.getFlight().getId()) || !flight.getOrigin().equals(flightBooking.getOrigin()) ||
                 !flight.getDestination().equals(flightBooking.getDestination()) || !flight.getDepartureDate().equals(flightBooking.getDepartureDate())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        if (flight.getSeatsEconomy() == 0 && flight.getSeatsBusiness() == 0 || flight.getDeleted()) {
-            throw new AgenciaException("El vuelo está completo o no existe.");
-        }
-        if (flightBooking.getSeatsEconomyTaken() > flight.getSeatsEconomy() || flightBooking.getSeatsBusinessTaken() > flight.getSeatsBusiness()) {
-            throw new AgenciaException("Ha seleccionado más asientos de los disponibles");
-        }
-        if (flightBooking.getPeopleQuantity() != flightBooking.getSeatsEconomyTaken() + flightBooking.getSeatsBusinessTaken()) {
-            throw new AgenciaException("El número de asientos seleccionados no coincide con la cantidad de personas");
-        }
 
-        if (flightBookingService.checkBooking(flightBooking)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        }else if (flight.getSeatsEconomy() == 0 && flight.getSeatsBusiness() == 0 || flight.getDeleted()) {
+            throw new AgenciaException("El vuelo está completo o no existe.");
+        }else if (flightBooking.getSeatsEconomyTaken() > flight.getSeatsEconomy() || flightBooking.getSeatsBusinessTaken() > flight.getSeatsBusiness()) {
+            throw new AgenciaException("Ha seleccionado más asientos de los disponibles");
+        }else if (flightBooking.getPeopleQuantity() != flightBooking.getSeatsEconomyTaken() + flightBooking.getSeatsBusinessTaken()) {
+            throw new AgenciaException("El número de asientos seleccionados no coincide con la cantidad de personas");
+        }else if (flightBookingService.checkBooking(flightBooking)) {
             throw new AgenciaException("La reserva que está intentando realizar ya existe.");
         }
         flightService.upgradeFlight(flight, flightBooking, true);
@@ -69,10 +66,10 @@ public class FlightBookingController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<FlightBooking> deleteFlightBooking(@PathVariable Long id) {
+    public ResponseEntity<FlightBooking> logicDeleteFlightBooking(@PathVariable Long id) {
 
         FlightBooking flightBooking = flightBookingService.findFlightBooking(id);
-        if (flightBooking == null) {
+        if (flightBooking == null || flightBooking.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         Flight flight = flightBooking.getFlight();
@@ -87,7 +84,7 @@ public class FlightBookingController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<List<FlightbookingDto>> getFlightBookings() {
+    public ResponseEntity<List<FlightBookingDto>> getFlightBookings() {
         if (flightBookingService.getFlightBookings().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -101,7 +98,7 @@ public class FlightBookingController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<FlightbookingDto> getFlightBookingById(@PathVariable Long id) {
+    public ResponseEntity<FlightBookingDto> getFlightBookingById(@PathVariable Long id) {
         FlightBooking flightBooking = flightBookingService.findFlightBooking(id);
         if (flightBooking == null || flightBooking.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -128,8 +125,6 @@ public class FlightBookingController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (flight.getSeatsEconomy() == 0 && flight.getSeatsBusiness() == 0 || flight.getDeleted()) {
-            //Como el vuelo está completo lo borramos para que no salga al listarlo ya que no se puede reservar ningún asiento
-            flightService.logicDeleteFlight(flight);
             throw new AgenciaException("El vuelo está completo o no existe.");
         }
         if (flightBookingEdit.getSeatsEconomyTaken() > flight.getSeatsEconomy() || flightBookingEdit.getSeatsBusinessTaken() > flight.getSeatsBusiness()) {
@@ -142,6 +137,8 @@ public class FlightBookingController {
         if (flightBookingService.checkBooking(flightBookingEdit)) {
             throw new AgenciaException("La reserva que está intentando realizar ya existe.");
         }
+        flightService.upgradeFlight(flight, flightBooking, false);
+        flightService.upgradeFlight(flight, flightBookingEdit, true);
         flightBookingService.editFlightbooking(flightBooking, flightBookingEdit);
         return ResponseEntity.ok(flightBooking);
     }

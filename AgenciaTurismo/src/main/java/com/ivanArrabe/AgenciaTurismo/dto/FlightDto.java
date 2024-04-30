@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FlightDto {
+
     private Long id;
     private String flightCode;
     private String origin;

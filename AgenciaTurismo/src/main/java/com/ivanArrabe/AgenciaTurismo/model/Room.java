@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +18,9 @@ public class Room {
 
     @ManyToOne
     private Hotel hotel;
+
+    @OneToMany(mappedBy = "room")
+    private List<RoomBooking> roomBookings;
 
     private String roomCode;
     private String roomType;
