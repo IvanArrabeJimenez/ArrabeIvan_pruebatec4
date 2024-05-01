@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/agency/room-bookings")
+@RequestMapping("/agency/room-booking")
 public class RoomBookingController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class RoomBookingController {
     @PostMapping("/new")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
-            @ApiResponse(responseCode = "400", description = "Los datos introducidos no coinciden con el vuelo solicitado."),
+            @ApiResponse(responseCode = "400", description = "Los datos introducidos no coinciden con la habitación solicitada."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
     public ResponseEntity<RoomBooking> saveRoomBooking(@RequestBody RoomBooking roomBooking) throws AgenciaException {
@@ -125,7 +125,7 @@ public class RoomBookingController {
             throw new AgenciaException("La habitación o el hotel seleccionado no existe.");
         } else if (roomBookingService.checkBooking(roomBooking)) {
             throw new AgenciaException("La reserva que está intentando realizar ya existe.");
-        } else if (roomBookingService.checkBookingDates(roomBooking)) {
+        } else if (!roomBookingService.checkBookingDates(roomBooking)) {
             throw new AgenciaException("No se puede realizar la reserva porque la habitación seleccionada tiene otra reserva con esas fechas.");
         }
         roomBookingService.editRoombooking(roomBooking,roomBookingEdit);

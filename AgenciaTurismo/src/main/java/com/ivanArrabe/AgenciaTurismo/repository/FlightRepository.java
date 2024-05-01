@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Long> {
     List<Flight> findAllByDeletedIsFalse();
+
     List<Flight> findFlightsByDepartureDateAndOriginAndDestinationAndDeletedIsFalse(LocalDate departureDate, String origin, String destination);
 }

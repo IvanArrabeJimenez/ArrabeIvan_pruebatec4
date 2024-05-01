@@ -2,6 +2,8 @@ package com.ivanArrabe.AgenciaTurismo.service;
 
 import com.ivanArrabe.AgenciaTurismo.dto.RoomDto;
 import com.ivanArrabe.AgenciaTurismo.model.Room;
+import com.ivanArrabe.AgenciaTurismo.model.RoomBooking;
+import com.ivanArrabe.AgenciaTurismo.repository.RoomBookingRepository;
 import com.ivanArrabe.AgenciaTurismo.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +16,12 @@ public class RoomService implements IRoomService{
 
     @Autowired
     private RoomRepository roomRepo;
+    @Autowired
+    private RoomBookingRepository roomBookingRepo;
 
     @Override
     public void saveRoom(Room room) {
         room.setDeleted(false);
-       // room.getHotel().getRoomList().add(room);
         roomRepo.save(room);
     }
 
@@ -60,15 +63,22 @@ public class RoomService implements IRoomService{
 
     @Override
     public List<RoomDto> getAvailableRooms(LocalDate dateFrom, LocalDate dateTo, String destination) {
-        return roomRepo.findAll().stream()
-                // Filtrar las habitaciones cuya fecha de entrada o salida no se solape con el rango especificado
-                .filter(room -> room.getRoomBookings().stream()
-                        .noneMatch(booking ->
-                                (booking.getEntryDate().isBefore(dateTo) || booking.getEntryDate().isEqual(dateTo)) &&
-                                        (booking.getDepartureDate().isAfter(dateFrom) || booking.getDepartureDate().isEqual(dateFrom))))
-                // Filtrar por la ciudad del hotel
+
+        return roomRepo.findAllByDeletedIsFalse().stream()
+                // Filtrar las habitaciones por la ciudad del hotel
                 .filter(room -> room.getHotel().getCity().equals(destination))
+                // Filtrar las habitaciones que no tienen reservas que se solapen con el rango especificado
+                .filter(room -> {
+                    List<RoomBooking> bookings = roomBookingRepo.findByRoomAndEntryDateLessThanEqualAndDepartureDateGreaterThanEqual(
+                            room,
+                            dateTo.minusDays(1),
+                            dateFrom.plusDays(1)
+                            //minusDays y plusDays lo utilizamos para ampliar un rango suponiendo que el día que se va un usuario puede entrar otro.
+                    );
+                    return bookings.isEmpty();
+                })
                 .map(room -> new RoomDto(room.getId(), room.getHotel().getCity(), room.getRoomCode(), room.getRoomType()))
                 .toList();
+
     }
 }

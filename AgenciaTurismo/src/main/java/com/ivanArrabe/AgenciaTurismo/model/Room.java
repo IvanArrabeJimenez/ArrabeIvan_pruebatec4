@@ -19,8 +19,8 @@ public class Room {
     @ManyToOne
     private Hotel hotel;
 
-    @OneToMany(mappedBy = "room")
-    private List<RoomBooking> roomBookings;
+//    @OneToMany(mappedBy = "room")
+//    private List<RoomBooking> roomBookings;
 
     private String roomCode;
     private String roomType;

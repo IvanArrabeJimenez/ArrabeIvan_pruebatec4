@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,17 +45,13 @@ public class RoomBookingService implements IRoomBookingService{
     @Override
     public Boolean checkBookingDates(RoomBooking roomBooking) {
 
-        // Verificar si hay alguna superposición
-        return roomBookingRepo.findAll().stream()
-                .filter(existingBooking -> existingBooking.getRoom().getId().equals(roomBooking.getRoom().getId()))
-                .anyMatch(existingBooking ->
-                        datesOverlap(existingBooking.getEntryDate(), existingBooking.getDepartureDate(),
-                                roomBooking.getEntryDate(), roomBooking.getDepartureDate()));
+        return roomBookingRepo.findAllByRoomIdAndDeletedIsFalse(roomBooking.getRoom().getId()).stream()
+                .anyMatch(existingBooking -> datesOverlap(existingBooking.getEntryDate(), existingBooking.getDepartureDate(),
+                        roomBooking.getEntryDate(), roomBooking.getDepartureDate()));
     }
 
-    // Método para verificar si hay superposición entre dos rangos de fechas
     private boolean datesOverlap(LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2) {
-        return start1.isBefore(end2) || end1.isAfter(start2);
+        return start1.isBefore(end2) && start2.isBefore(end1);
     }
 
     @Override

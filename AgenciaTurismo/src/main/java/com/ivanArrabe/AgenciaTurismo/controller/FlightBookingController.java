@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/agency/flight-bookings")
+@RequestMapping("/agency/flight-booking")
 public class FlightBookingController {
 
     @Autowired
