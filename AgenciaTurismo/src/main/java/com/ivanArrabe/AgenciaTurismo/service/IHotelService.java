@@ -6,15 +6,16 @@ import com.ivanArrabe.AgenciaTurismo.model.Hotel;
 import java.util.List;
 
 public interface IHotelService {
-    public void saveHotel(Hotel hotel);
 
-    public Hotel findHotel(Long id);
+    void saveHotel(Hotel hotel);
 
-    public void editHotel(Hotel hotel, Hotel hotelEdit);
+    Hotel findHotel(Long id);
 
-    public void logicDeleteHotel(Hotel hotel);
+    void editHotel(Hotel hotel, Hotel hotelEdit);
 
-    public List<HotelDto> getHotels();
+    void logicDeleteHotel(Hotel hotel);
 
-    public HotelDto getHotelById(Long id);
+    List<HotelDto> getHotels();
+
+    HotelDto getHotelById(Long id);
 }

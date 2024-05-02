@@ -39,21 +39,23 @@ public class FlightBookingController {
         Flight flight = flightService.findFlight(flightBooking.getFlight().getId());
         User user = userService.findUser(flightBooking.getUser().getId());
 
-        if (user == null || !user.getId().equals(flightBooking.getUser().getId()) ||
-                flight == null || !flight.getId().equals(flightBooking.getFlight().getId()) || !flight.getOrigin().equals(flightBooking.getOrigin()) ||
+        //Comprobamos que se asigna vuelo y usuario
+        if (user == null || user.getDeleted() || !user.getId().equals(flightBooking.getUser().getId()) ||
+                flight == null || flight.getDeleted() || !flight.getId().equals(flightBooking.getFlight().getId()) || !flight.getOrigin().equals(flightBooking.getOrigin()) ||
                 !flight.getDestination().equals(flightBooking.getDestination()) || !flight.getDepartureDate().equals(flightBooking.getDepartureDate())) {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        }else if (flight.getSeatsEconomy() == 0 && flight.getSeatsBusiness() == 0 || flight.getDeleted()) {
+            //Validamos la entrada de datos
+        } else if (flight.getSeatsEconomy() == 0 && flight.getSeatsBusiness() == 0 || flight.getDeleted()) {
             throw new AgenciaException("El vuelo está completo o no existe.");
-        }else if (flightBooking.getSeatsEconomyTaken() > flight.getSeatsEconomy() || flightBooking.getSeatsBusinessTaken() > flight.getSeatsBusiness()) {
+        } else if (flightBooking.getSeatsEconomyTaken() > flight.getSeatsEconomy() || flightBooking.getSeatsBusinessTaken() > flight.getSeatsBusiness()) {
             throw new AgenciaException("Ha seleccionado más asientos de los disponibles");
-        }else if (flightBooking.getPeopleQuantity() != flightBooking.getSeatsEconomyTaken() + flightBooking.getSeatsBusinessTaken()) {
+        } else if (flightBooking.getPeopleQuantity() != flightBooking.getSeatsEconomyTaken() + flightBooking.getSeatsBusinessTaken()) {
             throw new AgenciaException("El número de asientos seleccionados no coincide con la cantidad de personas");
-        }else if (flightBookingService.checkBooking(flightBooking)) {
+        } else if (flightBookingService.checkBooking(flightBooking)) {
             throw new AgenciaException("La reserva que está intentando realizar ya existe.");
         }
+        //Actualizamos los asientos del vuelo y guardamos la reserva
         flightService.upgradeFlight(flight, flightBooking, true);
         flightBookingService.saveFlightBooking(flight, user, flightBooking);
         return ResponseEntity.ok(flightBooking);
@@ -68,10 +70,12 @@ public class FlightBookingController {
     })
     public ResponseEntity<FlightBooking> logicDeleteFlightBooking(@PathVariable Long id) {
 
+        //Comprobamos que existe o que no está eliminado
         FlightBooking flightBooking = flightBookingService.findFlightBooking(id);
         if (flightBooking == null || flightBooking.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        //Actualizamos los asientos del vuelo y borramos la reserva
         Flight flight = flightBooking.getFlight();
         flightBookingService.logicDeleteFlightBooking(flightBooking);
         flightService.upgradeFlight(flight, flightBooking, false);
@@ -117,13 +121,16 @@ public class FlightBookingController {
         FlightBooking flightBooking = flightBookingService.findFlightBooking(id);
         Flight flight = flightService.findFlight(flightBookingEdit.getFlight().getId());
         User user = userService.findUser(flightBookingEdit.getUser().getId());
+
+        //Comprobamos que se asigna vuelo y usuario
         if (flightBooking == null || flightBooking.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else if (user == null || !user.getId().equals(flightBookingEdit.getUser().getId()) ||
-                flight == null || !flight.getId().equals(flightBookingEdit.getFlight().getId()) || !flight.getOrigin().equals(flightBookingEdit.getOrigin()) ||
+        } else if (user == null || user.getDeleted() || !user.getId().equals(flightBookingEdit.getUser().getId()) ||
+                flight == null || flight.getDeleted() || !flight.getId().equals(flightBookingEdit.getFlight().getId()) || !flight.getOrigin().equals(flightBookingEdit.getOrigin()) ||
                 !flight.getDestination().equals(flightBookingEdit.getDestination()) || !flight.getDepartureDate().equals(flightBookingEdit.getDepartureDate())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        //Validamos la entrada de datos
         if (flight.getSeatsEconomy() == 0 && flight.getSeatsBusiness() == 0 || flight.getDeleted()) {
             throw new AgenciaException("El vuelo está completo o no existe.");
         }
@@ -134,9 +141,7 @@ public class FlightBookingController {
             throw new AgenciaException("El número de asientos seleccionados no coincide con la cantidad de personas");
         }
 
-        if (flightBookingService.checkBooking(flightBookingEdit)) {
-            throw new AgenciaException("La reserva que está intentando realizar ya existe.");
-        }
+        //Actualizamos los asientos del vuelo y guardamos la reserva
         flightService.upgradeFlight(flight, flightBooking, false);
         flightService.upgradeFlight(flight, flightBookingEdit, true);
         flightBookingService.editFlightbooking(flightBooking, flightBookingEdit);

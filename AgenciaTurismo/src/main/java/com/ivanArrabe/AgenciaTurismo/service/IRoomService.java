@@ -7,7 +7,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IRoomService {
-    public void saveRoom(Room room);
+
+    void saveRoom(Room room);
 
     Room findRoom(Long id);
 

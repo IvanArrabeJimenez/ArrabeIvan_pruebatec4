@@ -1,7 +1,6 @@
 package com.ivanArrabe.AgenciaTurismo.service;
 
 import com.ivanArrabe.AgenciaTurismo.dto.RoomBookingDto;
-import com.ivanArrabe.AgenciaTurismo.dto.RoomDto;
 import com.ivanArrabe.AgenciaTurismo.model.Room;
 import com.ivanArrabe.AgenciaTurismo.model.RoomBooking;
 import com.ivanArrabe.AgenciaTurismo.model.User;
@@ -10,11 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class RoomBookingService implements IRoomBookingService{
+public class RoomBookingService implements IRoomBookingService {
 
     @Autowired
     private RoomBookingRepository roomBookingRepo;
@@ -30,8 +28,9 @@ public class RoomBookingService implements IRoomBookingService{
     public Boolean checkBooking(RoomBooking roomBooking) {
         roomBooking.setDeleted(false);
 
+        //Comprobamos que no exista una reserva igual y evitamos que se duplique
         return roomBookingRepo.findByDeletedFalse().stream()
-                .anyMatch(existingBooking->
+                .anyMatch(existingBooking ->
                         existingBooking.getUser().getId().equals(roomBooking.getUser().getId()) &&
                                 existingBooking.getRoom().getId().equals(roomBooking.getRoom().getId()) &&
                                 existingBooking.getPeopleQuantity().equals(roomBooking.getPeopleQuantity()) &&
@@ -45,6 +44,7 @@ public class RoomBookingService implements IRoomBookingService{
     @Override
     public Boolean checkBookingDates(RoomBooking roomBooking) {
 
+        //Comprobamos la disponibilidad de las habitaciones por medio de las fechas que tienen las reservas
         return roomBookingRepo.findAllByRoomIdAndDeletedIsFalse(roomBooking.getRoom().getId()).stream()
                 .anyMatch(existingBooking -> datesOverlap(existingBooking.getEntryDate(), existingBooking.getDepartureDate(),
                         roomBooking.getEntryDate(), roomBooking.getDepartureDate()));
@@ -58,6 +58,7 @@ public class RoomBookingService implements IRoomBookingService{
     public void saveRoomBooking(Room room, User user, RoomBooking roomBooking) {
         roomBooking.setUser(user);
         roomBooking.setRoom(room);
+        roomBooking.setDeleted(false);
         roomBookingRepo.save(roomBooking);
     }
 
@@ -70,7 +71,7 @@ public class RoomBookingService implements IRoomBookingService{
     @Override
     public List<RoomBookingDto> getRoomBookings() {
         return roomBookingRepo.findAllByDeletedIsFalse().stream()
-                .map(roomBooking -> new RoomBookingDto(roomBooking.getId(),roomBooking.getUser(),roomBooking.getRoom()))
+                .map(roomBooking -> new RoomBookingDto(roomBooking.getId(), roomBooking.getUser(), roomBooking.getRoom()))
                 .toList();
     }
 
@@ -84,7 +85,7 @@ public class RoomBookingService implements IRoomBookingService{
         return roomBookingRepo.findAllByDeletedIsFalse().stream()
                 .filter(roomBooking -> roomBooking.getId().equals(id))
                 .findFirst()
-                .map(roomBooking -> new RoomBookingDto(roomBooking.getId(),roomBooking.getUser(),roomBooking.getRoom()))
+                .map(roomBooking -> new RoomBookingDto(roomBooking.getId(), roomBooking.getUser(), roomBooking.getRoom()))
                 .orElse(null);
     }
 

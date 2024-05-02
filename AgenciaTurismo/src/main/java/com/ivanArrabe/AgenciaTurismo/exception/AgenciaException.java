@@ -1,6 +1,6 @@
 package com.ivanArrabe.AgenciaTurismo.exception;
 
-public class AgenciaException extends Exception{
+public class AgenciaException extends Exception {
 
     public AgenciaException() {
     }

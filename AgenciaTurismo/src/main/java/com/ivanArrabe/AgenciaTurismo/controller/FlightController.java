@@ -32,12 +32,14 @@ public class FlightController {
     })
     public ResponseEntity<Flight> saveFlight(@RequestBody Flight flight) {
 
+        //Validamos la entrada de datos
         if (flight == null || flight.getFlightCode() == null || flight.getFlightCode().isEmpty() || flight.getOrigin() == null || flight.getOrigin().isEmpty() ||
                 flight.getDestination() == null || flight.getDestination().isEmpty() || flight.getDepartureDate() == null ||
                 flight.getSeatsEconomy() == null || flight.getSeatsEconomy() <= 0 || flight.getSeatsBusiness() == null || flight.getSeatsBusiness() <= 0) {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        //Guardamos el vuelo
         flightService.saveFlight(flight);
         return ResponseEntity.ok(flight);
     }

@@ -8,12 +8,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class FlightBooking extends Booking{
+public class FlightBooking extends Booking {
 
     @ManyToOne
     private Flight flight;

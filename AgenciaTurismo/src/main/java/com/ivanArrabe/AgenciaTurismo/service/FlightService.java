@@ -64,6 +64,7 @@ public class FlightService implements IFlightService {
 
     @Override
     public void upgradeFlight(Flight flight, FlightBooking flightBooking, Boolean isCreating) {
+        //En este método accedemos al vuelo para restarle asientos o sumárselos en función de si creamos reserva o la eliminamos/editamos.
         if (isCreating) {
             flight.setSeatsEconomy(flight.getSeatsEconomy() - flightBooking.getSeatsEconomyTaken());
             flight.setSeatsBusiness(flight.getSeatsBusiness() - flightBooking.getSeatsBusinessTaken());
@@ -79,7 +80,8 @@ public class FlightService implements IFlightService {
 
     @Override
     public List<FlightDto> getAvailableFlights(LocalDate dateFrom, LocalDate dateTo, String origin, String destination) {
-        // Consulta para obtener los vuelos de ida
+
+        // Consulta para obtener los vuelos de ida. En el nombre del método va la query con los parámetros que queremos mandar por medio de hibernate
         List<Flight> departureFlight = flightRepo.findFlightsByDepartureDateAndOriginAndDestinationAndDeletedIsFalse(dateFrom, origin, destination);
         // Consulta para obtener los vuelos de vuelta (intercambiando origen y destino)
         List<Flight> returnFlight = flightRepo.findFlightsByDepartureDateAndOriginAndDestinationAndDeletedIsFalse(dateTo, destination, origin);

@@ -30,7 +30,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<Room> saveRoom(@RequestBody Room room){
+    public ResponseEntity<Room> saveRoom(@RequestBody Room room) {
         if (room == null || room.getRoomCode() == null || room.getRoomCode().isEmpty() || room.getRoomType() == null ||
                 room.getRoomType().isEmpty() || room.getRoomCapacity() == null || room.getRoomCapacity() <= 0) {
 
@@ -47,7 +47,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<Room> editRoom(@PathVariable Long id, @RequestBody Room roomEdit){
+    public ResponseEntity<Room> editRoom(@PathVariable Long id, @RequestBody Room roomEdit) {
         Room room = roomService.findRoom(id);
         if (room == null || room.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -55,7 +55,7 @@ public class RoomController {
                 roomEdit.getRoomType().isEmpty() || roomEdit.getRoomCapacity() == null || roomEdit.getRoomCapacity() <= 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        roomService.editRoom(room,roomEdit);
+        roomService.editRoom(room, roomEdit);
 
         return ResponseEntity.ok(room);
     }
@@ -68,7 +68,7 @@ public class RoomController {
             @ApiResponse(responseCode = "409", description = "No se puede eliminar la habitación porque existen reservas asociadas a ella."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<Room> logicDeleteRoom(@PathVariable Long id){
+    public ResponseEntity<Room> logicDeleteRoom(@PathVariable Long id) {
 
         Room room = roomService.findRoom(id);
         if (room == null) {
@@ -90,7 +90,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<List<RoomDto>> getRooms(){
+    public ResponseEntity<List<RoomDto>> getRooms() {
         if (roomService.getRooms().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -105,7 +105,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<RoomDto> getRoomById(@PathVariable Long id){
+    public ResponseEntity<RoomDto> getRoomById(@PathVariable Long id) {
         Room room = roomService.findRoom(id);
         if (room == null || room.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -116,18 +116,18 @@ public class RoomController {
     @GetMapping
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "La operación se ejecutó correctamente."),
-            @ApiResponse(responseCode = "204", description = "No se encontraron habitaciones para las fechas o destinos indicados."),
+            @ApiResponse(responseCode = "204", description = "No se encontraron habitaciones disponibles para las fechas o destinos indicados."),
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
     public ResponseEntity<List<RoomDto>> getAvailableRooms(@RequestParam("dateFrom") LocalDate dateFrom,
                                                            @RequestParam("dateTo") LocalDate dateTo,
-                                                           @RequestParam("destination") String destination){
-        List<RoomDto> rooms = roomService.getAvailableRooms(dateFrom,dateTo,destination);
+                                                           @RequestParam("destination") String destination) {
+        List<RoomDto> rooms = roomService.getAvailableRooms(dateFrom, dateTo, destination);
 
         if (rooms.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else {
+        } else {
             return ResponseEntity.ok(rooms);
         }
     }

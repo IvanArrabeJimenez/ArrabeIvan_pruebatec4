@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class RoomBooking extends Booking{
+public class RoomBooking extends Booking {
 
     @ManyToOne
     private Room room;

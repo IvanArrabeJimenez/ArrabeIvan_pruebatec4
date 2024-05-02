@@ -1,5 +1,6 @@
 package com.ivanArrabe.AgenciaTurismo.service;
 
+import com.ivanArrabe.AgenciaTurismo.dto.UserDto;
 import com.ivanArrabe.AgenciaTurismo.model.User;
 import com.ivanArrabe.AgenciaTurismo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +41,18 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<User> getUsers() {
-        return userRepo.findAllByDeletedIsFalse();
+    public List<UserDto> getUsers() {
+        return userRepo.findAllByDeletedIsFalse().stream()
+                .map(user -> new UserDto(user.getId(), user.getDni(), user.getName(), user.getSurname()))
+                .toList();
     }
 
     @Override
-    public User getUserById(Long id) {
+    public UserDto getUserById(Long id) {
         return userRepo.findAllByDeletedIsFalse().stream()
                 .filter(user -> user.getId().equals(id))
                 .findFirst()
+                .map(user -> new UserDto(user.getId(), user.getDni(), user.getName(), user.getSurname()))
                 .orElse(null);
     }
 

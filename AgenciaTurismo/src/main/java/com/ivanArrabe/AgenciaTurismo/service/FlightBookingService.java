@@ -20,6 +20,7 @@ public class FlightBookingService implements IFlightBookingService {
     public void saveFlightBooking(Flight flight, User user, FlightBooking flightBooking) {
         flightBooking.setFlight(flight);
         flightBooking.setUser(user);
+        flightBooking.setDeleted(false);
         flightBookingRepo.save(flightBooking);
     }
 

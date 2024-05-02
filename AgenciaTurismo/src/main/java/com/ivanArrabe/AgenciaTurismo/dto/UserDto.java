@@ -1,7 +1,5 @@
 package com.ivanArrabe.AgenciaTurismo.dto;
 
-import com.ivanArrabe.AgenciaTurismo.model.Room;
-import com.ivanArrabe.AgenciaTurismo.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomBookingDto {
+public class UserDto {
 
     private Long id;
-    private User user;
-    private Room room;
+    private String dni;
+    private String name;
+    private String surname;
 }

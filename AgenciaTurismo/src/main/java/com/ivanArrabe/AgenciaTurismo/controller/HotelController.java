@@ -25,7 +25,7 @@ public class HotelController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<Hotel> saveHotel(@RequestBody Hotel hotel){
+    public ResponseEntity<Hotel> saveHotel(@RequestBody Hotel hotel) {
         if (hotel == null || hotel.getHotelCode() == null || hotel.getHotelCode().isEmpty() ||
                 hotel.getName() == null || hotel.getName().isEmpty() ||
                 hotel.getCity() == null || hotel.getCity().isEmpty()) {
@@ -43,11 +43,11 @@ public class HotelController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<Hotel> editHotel (@PathVariable Long id, @RequestBody Hotel hotelEdit){
+    public ResponseEntity<Hotel> editHotel(@PathVariable Long id, @RequestBody Hotel hotelEdit) {
         Hotel hotel = hotelService.findHotel(id);
         if (hotel == null || hotel.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else if (hotelEdit == null || hotelEdit.getHotelCode() == null || hotelEdit.getHotelCode().isEmpty() ||
+        } else if (hotelEdit == null || hotelEdit.getHotelCode() == null || hotelEdit.getHotelCode().isEmpty() ||
                 hotelEdit.getName() == null || hotelEdit.getName().isEmpty() ||
                 hotelEdit.getCity() == null || hotelEdit.getCity().isEmpty()) {
 
@@ -64,7 +64,7 @@ public class HotelController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<Hotel> logicDeleteHotel(@PathVariable Long id){
+    public ResponseEntity<Hotel> logicDeleteHotel(@PathVariable Long id) {
         Hotel hotel = hotelService.findHotel(id);
         if (hotel == null || hotel.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -80,7 +80,7 @@ public class HotelController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<List<HotelDto>> getHotels(){
+    public ResponseEntity<List<HotelDto>> getHotels() {
         if (hotelService.getHotels().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -94,7 +94,7 @@ public class HotelController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<HotelDto> getHotelById(@PathVariable Long id){
+    public ResponseEntity<HotelDto> getHotelById(@PathVariable Long id) {
         Hotel hotel = hotelService.findHotel(id);
         if (hotel == null || hotel.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

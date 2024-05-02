@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class HotelService implements IHotelService{
+public class HotelService implements IHotelService {
 
     @Autowired
     public HotelRepository hotelRepo;
@@ -42,15 +42,16 @@ public class HotelService implements IHotelService{
     @Override
     public List<HotelDto> getHotels() {
         return hotelRepo.findAllByDeletedIsFalse().stream()
-                .map(hotel-> new HotelDto(hotel.getId(), hotel.getName(), hotel.getCity()))
+                .map(hotel -> new HotelDto(hotel.getId(), hotel.getName(), hotel.getCity()))
                 .toList();
     }
+
     @Override
     public HotelDto getHotelById(Long id) {
         return hotelRepo.findAllByDeletedIsFalse().stream()
-                .filter(hotel-> hotel.getId().equals(id))
+                .filter(hotel -> hotel.getId().equals(id))
                 .findFirst()
-                .map(hotel-> new HotelDto(hotel.getId(), hotel.getName(), hotel.getCity()))
+                .map(hotel -> new HotelDto(hotel.getId(), hotel.getName(), hotel.getCity()))
                 .orElse(null);
     }
 }

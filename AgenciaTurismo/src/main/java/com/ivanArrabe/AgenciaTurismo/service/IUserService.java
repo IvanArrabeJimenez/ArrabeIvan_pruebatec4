@@ -1,19 +1,21 @@
 package com.ivanArrabe.AgenciaTurismo.service;
 
+import com.ivanArrabe.AgenciaTurismo.dto.UserDto;
 import com.ivanArrabe.AgenciaTurismo.model.User;
 
 import java.util.List;
 
 public interface IUserService {
-    public void saveUser(User user);
 
-    public void editUser(User user, User userEdit);
+    void saveUser(User user);
 
-    public void logicDeleteUser(User user);
+    void editUser(User user, User userEdit);
 
-    public User findUser(Long id);
+    void logicDeleteUser(User user);
 
-    List<User> getUsers();
+    User findUser(Long id);
 
-    public User getUserById(Long id);
+    List<UserDto> getUsers();
+
+    UserDto getUserById(Long id);
 }

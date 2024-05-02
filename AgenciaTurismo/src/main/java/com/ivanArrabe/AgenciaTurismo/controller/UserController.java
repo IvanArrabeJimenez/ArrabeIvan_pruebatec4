@@ -1,5 +1,6 @@
 package com.ivanArrabe.AgenciaTurismo.controller;
 
+import com.ivanArrabe.AgenciaTurismo.dto.UserDto;
 import com.ivanArrabe.AgenciaTurismo.model.User;
 import com.ivanArrabe.AgenciaTurismo.service.IUserService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -80,7 +81,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<UserDto>> getUsers() {
         if (userService.getUsers().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -94,7 +95,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Algún parámetro no cumple con el formato o es requerido y no está presente."),
             @ApiResponse(responseCode = "500", description = "Error interno de servidor.")
     })
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         User user = userService.findUser(id);
         if (user == null || user.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

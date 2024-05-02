@@ -8,19 +8,20 @@ import com.ivanArrabe.AgenciaTurismo.model.User;
 import java.util.List;
 
 public interface IFlightBookingService {
-    public void saveFlightBooking(Flight flight, User user, FlightBooking flightBooking);
 
-    public Boolean checkBooking(FlightBooking flightBooking);
+    void saveFlightBooking(Flight flight, User user, FlightBooking flightBooking);
 
-    public FlightBooking findFlightBooking(Long id);
+    Boolean checkBooking(FlightBooking flightBooking);
 
-    public void logicDeleteFlightBooking(FlightBooking flightBooking);
+    FlightBooking findFlightBooking(Long id);
 
-    public List<FlightBookingDto> getFlightBookings();
+    void logicDeleteFlightBooking(FlightBooking flightBooking);
 
-    public FlightBookingDto getFlightBookingById(Long id);
+    List<FlightBookingDto> getFlightBookings();
 
-    public void editFlightbooking(FlightBooking flightBooking, FlightBooking flightBookingEdit);
+    FlightBookingDto getFlightBookingById(Long id);
 
-    public Boolean checkAllFlightBookings(Flight flight);
+    void editFlightbooking(FlightBooking flightBooking, FlightBooking flightBookingEdit);
+
+    Boolean checkAllFlightBookings(Flight flight);
 }

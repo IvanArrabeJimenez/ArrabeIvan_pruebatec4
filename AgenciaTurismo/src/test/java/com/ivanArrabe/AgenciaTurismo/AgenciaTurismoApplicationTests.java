@@ -45,28 +45,28 @@ class AgenciaTurismoApplicationTests {
 
     @Test
     public void testGetHotelsOk() {
-        // Mock del servicio para devolver una lista de hoteles no vacía
+        // Mock del servicio para devolver una lista de hoteles no vacía.
         List<HotelDto> hotelList = new ArrayList<>();
         hotelList.add(new HotelDto());
         when(hotelService.getHotels()).thenReturn(hotelList);
 
-        // Llamar al método del controlador y verificar la respuesta
+        // Llamar al método del controlador y verificar la respuesta.
         ResponseEntity<List<HotelDto>> response = hotelController.getHotels();
 
-        // Verificar que la respuesta sea 200 OK y que la lista no esté vacía
+        // Verificar que la respuesta sea 200 OK y que la lista no esté vacía.
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(hotelList, response.getBody());
     }
 
     @Test
     public void testGetHotelsKo() {
-        // Mock del servicio para devolver una lista de hoteles vacía
+        // Mock del servicio para devolver una lista de hoteles vacía.
         when(hotelService.getHotels()).thenReturn(new ArrayList<>());
 
-        // Llamar al método del controlador y verificar la respuesta
+        // Llamar al método del controlador y verificar la respuesta.
         ResponseEntity<List<HotelDto>> response = hotelController.getHotels();
 
-        // Verificar que la respuesta sea 204 NO CONTENT
+        // Verificar que la respuesta sea 204 NO CONTENT.
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
@@ -78,34 +78,34 @@ class AgenciaTurismoApplicationTests {
         String origin = "Origen";
         String destination = "Destino";
 
-        // Mock del servicio para devolver una lista de vuelos no vacía
+        // Mock del servicio para devolver una lista de vuelos no vacía.
         List<FlightDto> flightList = new ArrayList<>();
         flightList.add(new FlightDto());
         when(flightService.getAvailableFlights(dateFrom, dateTo, origin, destination)).thenReturn(flightList);
 
-        // Llamar al método del controlador y verificar la respuesta
+        // Llamar al método del controlador y verificar la respuesta.
         ResponseEntity<List<FlightDto>> response = flightController.getAvailableFlights(dateFrom, dateTo, origin, destination);
 
-        // Verificar que la respuesta sea 200 OK y que la lista no esté vacía
+        // Verificar que la respuesta sea 200 OK y que la lista no esté vacía.
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(flightList, response.getBody());
     }
 
     @Test
     public void testGetAvailableFlightsKo() {
-        // Datos de entrada para el test
+        // Datos de entrada para el test.
         LocalDate dateFrom = LocalDate.now();
         LocalDate dateTo = LocalDate.now().plusDays(7);
         String origin = "Origen";
         String destination = "Destino";
 
-        // Mock del servicio para devolver una lista de vuelos vacía
+        // Mock del servicio para devolver una lista de vuelos vacía.
         when(flightService.getAvailableFlights(dateFrom, dateTo, origin, destination)).thenReturn(new ArrayList<>());
 
-        // Llamar al método del controlador y verificar la respuesta
+        // Llamar al método del controlador y verificar la respuesta.
         ResponseEntity<List<FlightDto>> response = flightController.getAvailableFlights(dateFrom, dateTo, origin, destination);
 
-        // Verificar que la respuesta sea 204 NO CONTENT
+        // Verificar que la respuesta sea 204 NO CONTENT.
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
